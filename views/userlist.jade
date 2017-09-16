@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1 Indorse - User List
+    br
+    p Click an username to find out if the user's repository is verified
+
+    ul
+        each user, i in userlist
+            li
+                a(href="/verification"+user.username)= user.username
+                = user.email
+                = user.hash
+                //a(href="mailto:#{user.email}")= user.username

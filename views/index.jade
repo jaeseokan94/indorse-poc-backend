@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1= title
+    p this should be indorse main webpage
+    a(href="/newuser")='verify your github'
+    br
+    a(href="/userlist")='check if you are verified'
+
+    - var something = function() {
+    - console.log('s')
+    - }
+    button(onclick='#{something()}') Send-hash

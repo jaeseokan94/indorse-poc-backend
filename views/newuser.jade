@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    h1 Would like to add your Github?
+    br
+    p Please enter your indorse account (email) and your github account
+    br
+    form#formAddUser(name="adduser",method="post",action="/adduser")
+        input#inputUserName(type="text", placeholder="github account", name="username")
+        input#inputUserEmail(type="text", placeholder="indorse account", name="useremail")
+        input#inputTest(type="text", name="test")
+        button#btnSubmit(type="submit") submit
+
+    br
+    p What's next? - You will receive an email with an instruction on how to add your github repostiory to your indorse account
+    br
