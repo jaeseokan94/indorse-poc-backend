@@ -13,7 +13,7 @@ var db = monk('127.0.0.1:27017/indorse-poc-backend');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
-var app = express();
+var app = express(); // instantiates Express and assigns this app vairable to it
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
