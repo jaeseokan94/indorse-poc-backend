@@ -43,11 +43,11 @@ router.post('/adduser', function(req, res){
   var mailOptions = {
     from: adminEmail,
     to: userEmail,
-    subject: 'Instruction : Github verification',
+    subject: 'Confirm your Github integration',
     html: '<h1> Are you ' + userName + ' ? </h1>' +
-    '<p> To claim your github repository, please create a repository name with   ' +
+    '<p> To link your Github repository, please create a repository name with   ' +
     userHash +
-    '<br> <p> After creating the repository, please cick verified button to complete verification </p>'
+    '<br> <p> After creating the repository, please click \'Confirm\' to complete verification </p>'
   };
 
   collection.insert({
@@ -57,7 +57,8 @@ router.post('/adduser', function(req, res){
 
   }, function(err, doc){
     if(err){
-      res.send("Error : Unable to add the user email");
+      res.send("Error : Unable to add the user email / erorr : " + err);     // debug message
+
     }
     else{
       transporter.sendMail(mailOptions, function(error, info){

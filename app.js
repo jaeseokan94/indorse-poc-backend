@@ -33,7 +33,6 @@ app.use(function(req,res,next){
   next();
 });
 
-
 app.use('/', index); // go to routes folder and find index.jade
 app.use('/users', users);
 
