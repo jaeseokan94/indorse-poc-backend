@@ -25,7 +25,7 @@
   username : '' / hashvalue : ''
   Expect : Username does not exist
   Result : Github username "" does not exist
-  All 4 cases passed
+  All 5 cases passed
 
 */
 var assert = require('assert');

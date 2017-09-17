@@ -1,1 +1,1 @@
-// To demonstrate how github-verification can be decentralized 
+// To demonstrate how github-verification can be decentralized
