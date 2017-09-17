@@ -1,3 +1,4 @@
+/*
 var express = require('express');
 var app = express();
 user = require('./models/users');
@@ -15,8 +16,8 @@ let options = {
 };
 
 app.configure(function () {
-    app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
-    app.use(express.bodyParser());
+    app.use(express.logger('dev'));  */   /* 'default', 'short', 'tiny', 'dev' */
+/*    app.use(express.bodyParser());
     app.use(bearerToken());
     app.use(auth);
 });
@@ -60,3 +61,4 @@ app.get('/closevotes',vote.closeVotes)
 app.listen(config.get('port'));
 console.log('server running on port ' + config.get('port') + 'succesfully');
 module.exports = app;
+*/
