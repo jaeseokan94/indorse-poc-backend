@@ -41,6 +41,7 @@
     "chai-http": "^2.0.1",
     "mocha": "^2.5.3",
     "nodemon": "^1.11.0",
+    "should": "^13.0.1",
     "sinon": "^3.2.0",
     "sleep": "^5.1.1",
     "supertest": "^3.0.0"

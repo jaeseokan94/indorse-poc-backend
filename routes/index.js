@@ -92,12 +92,14 @@ router.get('/verification', function(req, res){
 });
 
 router.post('/addVerification', function(req, res){
+
+  console.log('Verification processing..');
   // assign internal DB variable
   var db = req.db;
   // TODO : Get the user name from the user's authentication. (Currently receiving from uesr input)
-  var userName = 'jaeseokan94'
+  var userName = req.body.username;
   var userEmail = req.body.useremail;
-  var userHash = 'cb71bc305bfde6f67af6ee1959e67d54'; // get this from database
+  var userHash = req.body.userhash; // get this from database
 
 
 
