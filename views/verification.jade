@@ -9,8 +9,9 @@ block content
     p As a result, user just need to click the confirmation button without inputting Github's account.
     p In addition, the user need to be able to access this page by clicking a button in the integration email. (So that user can access easily)
     br
-    form#formAddUser(name="adduser",method="post",action="/adduser")
+    form#formAddUser(name="adduser",method="post",action="/addVerification")
         input#inputUserName(type="text", placeholder="Github account", name="username")
+        input#inputUserEmail(type="text", placeholder="Indorse account", name="useremail")
         button#btnSubmit(type="submit") Confirm
 
     br
