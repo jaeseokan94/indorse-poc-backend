@@ -11,7 +11,6 @@ var monk = require('monk');
 var db = monk('127.0.0.1:27017/indorse-poc-backend');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express(); // instantiates Express and assigns this app vairable to it
 
@@ -34,7 +33,6 @@ app.use(function(req,res,next){
 });
 
 app.use('/', index); // go to routes folder and find index.jade
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

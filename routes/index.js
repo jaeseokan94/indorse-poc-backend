@@ -3,17 +3,16 @@ var router = express.Router();
 var crypto = require('crypto'); // to create hashes
 var nodemailer = require('nodemailer');
 var request = require('request-promise'); // api request
-
-
 var adminEmail = 'jaetest94@gmail.com'
-
-var transporter = nodemailer.createTransport({
+var transporter = nodemailer.createTransport({ // transporter = email sender
   service: 'gmail',
   auth: {
     user: adminEmail,
-    pass: 'jaetest94!'
+    pass: 'jaetest94!' //password
   }
 });
+
+
 // main page
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Indorse - Github verification page' });
@@ -30,25 +29,33 @@ router.get('/userlist', function(req, res) {
     });
 });
 
-// write : add new user
-// TODO : this part should be connected with the indorse account.
-// so once a user enter this page, all user need to do is adding the github-account
 router.get('/newuser', function(req, res){
   res.render('newuser', { title: 'Add new user '});
 });
 
-// POST to add user service
-router.post('/adduser', function(req, res){
-  // assign internal DB variable
-  var db = req.db;
+router.get('/verification', function(req, res){
+  res.render('verification', { title: 'Verify new user '});
+});
 
+
+
+// Step 1 - Generate a hash-value, and email to a user
+// TODO : this part should be connected with the indorse account.
+// Once a user enter this page, all user need to do is adding the github-account
+// Input : username(Github username) / useremail (email that is connected to indorse account)
+// Output : 1. Sending an email to useremail with hash-value
+//          2. Write username, useremail, userhash in the database
+router.post('/adduser', function(req, res){
+
+  var db = req.db; // assign internal DB variable
   var userName = req.body.username;
   var userEmail = req.body.useremail;
-  // every time user make an input, a unique hash will be created and stored in a database.
+  // Every time user make an input, a unique hash will be created and stored in a database.
+  // Hash collision is not a problem in this case.
   var userHash = crypto.createHash('md5').update(userEmail).digest('hex');
+  var collection = db.get('usercollection'); // Table name : 'usercollection'
 
-  var collection = db.get('usercollection');
-
+  // email context
   var mailOptions = {
     from: adminEmail,
     to: userEmail,
@@ -60,56 +67,57 @@ router.post('/adduser', function(req, res){
     ' to complete verification </p>'
   };
 
+  // write into database
   collection.insert({
     "username" : userName,
     "email" : userEmail,
     "hash" : userHash
-
   }, function(err, doc){
     if(err){
       res.send("Error : Unable to add the user email / erorr : " + err);     // debug message
 
     }
     else{
+      // sending an email to the user with hash value
       transporter.sendMail(mailOptions, function(error, info){
           if (error) {
               console.log(error);
             } else {
               console.log('Email sent: ' + info.response);
-  }
-});
+            }
+        });
       // direct to userlist page
       res.redirect("userlist");
     }
   });
-
 });
 
-
-
-router.get('/verification', function(req, res){
-  res.render('verification', { title: 'Verify new user '});
-});
-
+// TODO : Get the user name from the user's authentication. (Currently receiving from uesr input)
+// Step 2 - Verify if a user has right to create a repository that he claimed
+// Input : username , userhash (useremail is dummy data for this post request)
+// Output : 4 types 1. successfully verified
+//                  2. username does not exist
+//                  3. hash value repository does not exist in the username
+//                  4. error
 router.post('/addVerification', function(req, res){
 
   console.log('Verification processing..');
-  // assign internal DB variable
-  var db = req.db;
-  // TODO : Get the user name from the user's authentication. (Currently receiving from uesr input)
+  var db = req.db;   // assign internal DB variable
   var userName = req.body.username;
   var userEmail = req.body.useremail;
-  var userHash = req.body.userhash; // get this from database
+  var userHash = req.body.userhash;
 
-
-
-  var isHash = new RegExp(userHash,'g'); // find a string that has this hash
-  var isUser = new RegExp(userName,'g');
-  var hasRepo = false;
+  var isHash = new RegExp(userHash,'g'); // find a string matches with userhash
+  var isUser = new RegExp(userName,'g'); // find a string matches with username
+  var hasRepo = false; // If a user has hash value repository, this variable will be true. Defalt vallue is false
 
   var collection = db.get('usercollection');
 
-
+  // Asynchrnous and sequential function
+  // Getting the Github user's information from Github's API
+  // Then, filter the repository name with the hash-value
+  // Then, check if the repo owner's username matches with the username
+  // Then, update the database that the user owns that Github repository
   request({
     "method":"GET",
     "uri":'https://api.github.com/users/'+userName+'/repos?sort=created',
@@ -120,10 +128,9 @@ router.post('/addVerification', function(req, res){
   }).then(function(data){
     return data;
   }).filter(function(data){
-    console.log('this is null ' + data);
     return data.name.match(isHash);
   }).then(function(data){
-    // repository not exist
+        // If hash-value named repository not exist
         if(data[0]==undefined){
           res.send('Error : Repository ' + userHash + ' does not exist');
         }
@@ -131,7 +138,7 @@ router.post('/addVerification', function(req, res){
     var hasRepo = isUser.test(repoOwner);
     return hasRepo;
   }).then(function(hasRepo){
-        // updating database
+        // updating database - This part should be updated
         collection.insert({
           "username" : userName,
           "email" : userEmail,
@@ -148,7 +155,7 @@ router.post('/addVerification', function(req, res){
       });
   }).catch(function(err){
     console.log('error code : '+err.statusCode);
-    console.log(err);
+    console.log(err); // print error
     if(err.statusCode==404){
       res.send('Github username "'+userName + '" does not exist');
     }else{
