@@ -1,5 +1,18 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title}
+    h1 Integrate your github
+    br
+    p TODO :
+    p Currently, user need to input Github's account in this page for the confirmation.
+    p In the next development phase, this page need to be integrated with user authentication.
+    p As a result, user just need to click the confirmation button without inputting Github's account.
+    p In addition, the user need to be able to access this page by clicking a button in the integration email. (So that user can access easily)
+    br
+    form#formAddUser(name="adduser",method="post",action="/adduser")
+        input#inputUserName(type="text", placeholder="Github account", name="username")
+        button#btnSubmit(type="submit") Confirm
+
+    br
+    p What's next? - You will receive an email if your account is successfully integrated.
+    br
