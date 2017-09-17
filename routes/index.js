@@ -52,6 +52,7 @@ router.post('/adduser', function(req, res){
   var userEmail = req.body.useremail;
   // Every time user make an input, a unique hash will be created and stored in a database.
   // Hash collision is not a problem in this case.
+  // THIS SHOULD NOT GO INTO PRODUCTION - using 'useremail' to make a hash value is not a good idea. Anyone can guess the hash value of other people's
   var userHash = crypto.createHash('md5').update(userEmail).digest('hex');
   var collection = db.get('usercollection'); // Table name : 'usercollection'
 
